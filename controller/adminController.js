@@ -222,14 +222,12 @@ const listOfBlogs = async (req, res) => {
 
 const editBlog = async (req, res) => {
     try {
-        const _id = req.params.id
-        const { title, detail } = req.body
-        const data = await Blogs.findOne({ _id });
+
+        const { title, detail, id } = req.body
+        const data = await Blogs.findOne({ _id: id });
         if (data) {
-
             try {
-
-                const cloud = await cloudnary.uploader.upload(req.file.path)
+                const cloud = await cloudnary.uploader.upload(req.file ? req.file.path : data.image)
                 data.title = title ? title : data?.title
                 data.detail = detail ? detail : data?.detail
                 data.image = cloud?.url
@@ -249,15 +247,15 @@ const editBlog = async (req, res) => {
 
 const editDevice = async (req, res) => {
     try {
-        const _id = req.params.id
-        const { title, detail } = req.body
-        const data = await Device.findOne({ _id });
+
+        const { title, detail, id } = req.body
+        const data = await Device.findOne({ _id: id });
         if (data) {
             try {
-                const cloud = await cloudnary.uploader.upload(req.file.path)
+                const cloud = await cloudnary.uploader.upload(req.file ? req.file.path : data.image)
                 data.title = title ? title : data?.title
                 data.detail = detail ? detail : data?.detail
-                data.image = cloud.url
+                data.image = cloud?.url
                 await data.save()
                 return res.status(200).send({ status: 1, message: `Devices updated Successfully`, data })
             } catch (error) {

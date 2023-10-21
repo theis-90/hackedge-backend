@@ -13,12 +13,12 @@ router.get("/admin/api/dashboard", adminAuth, getDashboardData)
 router.post("/admin/api/create-blog", adminAuth, upload.single("blogImage"), createBlog)
 router.delete("/admin/api/delete-blog/:id", adminAuth, deleteBlog)
 router.get("/admin/api/list-of-blogs", adminAuth, listOfBlogs)
-router.post("/admin/api/edit-blog/:id", adminAuth, upload.single("blogImage"), editBlog)
+router.post("/admin/api/edit-blog", adminAuth, upload.single("blogImage"), editBlog)
 
 router.post("/admin/api/create-device", adminAuth, upload.single("deviceImage"), createDevice)
 router.delete("/admin/api/delete-device/:id", adminAuth , deleteDevice)
 router.get("/admin/api/list-of-device", adminAuth , listOfDevice)
-router.post("/admin/api/edit-device/:id", adminAuth, upload.single("deviceImage"), editDevice)
+router.post("/admin/api/edit-device", adminAuth, upload.single("deviceImage"), editDevice)
 
 
 router.get("/admin/api/get-all-contact", adminAuth, getAllContact)
