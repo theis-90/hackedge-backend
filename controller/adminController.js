@@ -5,6 +5,7 @@ const Contact = mongoose.model('Contact');
 const Product = mongoose.model('Product');
 const Device = mongoose.model('Device');
 const bcrypt = require('bcryptjs')
+const cloudnary = require("../utils/cloudnary")
 
 //done
 const signIn = async (req, res) => {
@@ -112,19 +113,24 @@ const createBlog = async (req, res) => {
         } else if (!detail) {
             return res.status(400).send({ status: 0, message: "Detail Is Required" })
         } else {
-            const addBlog = new Blogs({
-                title,
-                detail,
-                image: req.file ? req.file.path : null,
-            })
+            try {
+                const cloud = await cloudnary.uploader.upload(req.file.path)
+                const addBlog = new Blogs({
+                    title,
+                    detail,
+                    image: cloud?.url,
+                })
 
-            await addBlog.save()
-            if (addBlog) {
-                return res.status(200).json({ status: 1, message: "Blogs added successfully" })
-            } else {
-
-                return res.status(400).json({ status: 0, message: "Something went wrong" })
+                await addBlog.save()
+                if (addBlog) {
+                    return res.status(200).json({ status: 1, message: "Blogs added successfully" })
+                } else {
+                    return res.status(400).json({ status: 0, message: "Something went wrong" })
+                }
+            } catch (error) {
+                console.log(error)
             }
+
         }
 
     } catch (err) {
@@ -135,28 +141,32 @@ const createBlog = async (req, res) => {
 const createDevice = async (req, res) => {
     try {
         const { title, detail } = req.body
-        console.log(req.file)
+
         if (!title) {
 
             return res.status(400).send({ status: 0, message: "Title Is Required" })
         } else if (!detail) {
             return res.status(400).send({ status: 0, message: "Detail Is Required" })
         } else {
-            const addDevice = new Device({
-                title,
-                detail,
-                image: req.file ? req.file.path : null,
-            })
+            try {
+                const cloud = await cloudnary.uploader.upload(req.file.path)
+                const addDevice = new Device({
+                    title,
+                    detail,
+                    image: cloud?.url
+                })
 
-            await addDevice.save()
-            if (addDevice) {
-                return res.status(200).json({ status: 1, message: "HackEdge device added successfully" })
-            } else {
+                await addDevice.save()
+                if (addDevice) {
+                    return res.status(200).json({ status: 1, message: "HackEdge device added successfully" })
+                } else {
 
-                return res.status(400).json({ status: 0, message: "Something went wrong" })
+                    return res.status(400).json({ status: 0, message: "Something went wrong" })
+                }
+            } catch (error) {
+                console.log(error)
             }
         }
-
     } catch (err) {
         return res.status(500).send({ status: 0, message: err.message })
     }
@@ -288,7 +298,7 @@ const getDashboardData = async (req, res) => {
 
         const blogs = await Blogs.find({}).countDocuments();
         const contact = await Contact.find({}).countDocuments();
-        const product = await Product.find({}).countDocuments();
+        const product = await Device.find({}).countDocuments();
 
 
         return res.status(200).json({ status: 1, blogs: blogs > 0 ? blogs : 0, contact: contact > 0 ? contact : 0, product: product > 0 ? product : 0 });
@@ -396,4 +406,4 @@ const editProduct = async (req, res) => {
         return res.status(500).send({ status: 0, message: err.message })
     }
 }
-module.exports = { signIn, createBlog, editProduct,editDevice, createDevice, deleteDevice, listOfDevice, listOfProducts, deleteBlog, deleteProduct, createProduct, getDashboardData, signOut, updatePassword, deleteContact, listOfBlogs, getAllContact, editBlog }
+module.exports = { signIn, createBlog, editProduct, editDevice, createDevice, deleteDevice, listOfDevice, listOfProducts, deleteBlog, deleteProduct, createProduct, getDashboardData, signOut, updatePassword, deleteContact, listOfBlogs, getAllContact, editBlog }
