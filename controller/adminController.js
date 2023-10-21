@@ -227,14 +227,18 @@ const editBlog = async (req, res) => {
         const data = await Blogs.findOne({ _id });
         if (data) {
 
+            try {
 
+                const cloud = await cloudnary.uploader.upload(req.file.path)
+                data.title = title ? title : data?.title
+                data.detail = detail ? detail : data?.detail
+                data.image = cloud?.url
+                await data.save()
 
-            data.title = title ? title : data?.title
-            data.detail = detail ? detail : data?.detail
-            data.image = req.file ? req.file.path : data?.image
-            await data.save()
-
-            return res.status(200).send({ status: 1, message: `Blog updated Successfully`, data })
+                return res.status(200).send({ status: 1, message: `Blog updated Successfully`, data })
+            } catch (error) {
+                console.log(error)
+            }
         } else {
             return res.status(400).send({ status: 0, message: "Blog not found" })
         }
@@ -249,12 +253,18 @@ const editDevice = async (req, res) => {
         const { title, detail } = req.body
         const data = await Device.findOne({ _id });
         if (data) {
-            data.title = title ? title : data?.title
-            data.detail = detail ? detail : data?.detail
-            data.image = req.file ? req.file.path : data?.image
-            await data.save()
+            try {
+                const cloud = await cloudnary.uploader.upload(req.file.path)
+                data.title = title ? title : data?.title
+                data.detail = detail ? detail : data?.detail
+                data.image = cloud.url
+                await data.save()
+                return res.status(200).send({ status: 1, message: `Devices updated Successfully`, data })
+            } catch (error) {
+                console.log(error)
+            }
 
-            return res.status(200).send({ status: 1, message: `Devices updated Successfully`, data })
+
         } else {
             return res.status(400).send({ status: 0, message: "Devices not found" })
         }

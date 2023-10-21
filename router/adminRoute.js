@@ -16,7 +16,7 @@ router.get("/admin/api/list-of-blogs", adminAuth, listOfBlogs)
 router.post("/admin/api/edit-blog/:id", adminAuth, upload.single("blogImage"), editBlog)
 
 router.post("/admin/api/create-device", adminAuth, upload.single("deviceImage"), createDevice)
-router.delete("/admin/api/delete-device", adminAuth , deleteDevice)
+router.delete("/admin/api/delete-device/:id", adminAuth , deleteDevice)
 router.get("/admin/api/list-of-device", adminAuth , listOfDevice)
 router.post("/admin/api/edit-device/:id", adminAuth, upload.single("deviceImage"), editDevice)
 
